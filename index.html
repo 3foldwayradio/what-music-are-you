@@ -73,7 +73,7 @@ body{font-family:'Raleway',sans-serif;background:#080808;color:#f0f0f0;min-heigh
 .card-eyebrow{font-size:9px;letter-spacing:0.3em;text-transform:uppercase;opacity:0.6;margin-bottom:8px;font-weight:600}
 .card-genre{font-family:'Playfair Display',serif;font-size:clamp(24px,5vw,38px);font-weight:900;color:#fff;line-height:1;letter-spacing:-0.02em}
 .card-adj{font-family:'Lora',serif;font-size:14px;font-style:italic;opacity:0.7;margin-top:6px}
-.card-img-wrap{width:100%;aspect-ratio:4/3;overflow:hidden;display:flex;align-items:center;justify-content:center;position:relative;background:#050505}
+.card-img-wrap{width:100%;aspect-ratio:16/9;overflow:hidden;display:flex;align-items:center;justify-content:center;position:relative;background:#050505}
 .card-img-wrap img{width:100%;height:100%;object-fit:cover;display:block}
 .port-ph{color:#333;font-style:italic;font-size:13px;padding:20px;position:absolute;text-align:center}
 .card-stats{display:grid;grid-template-columns:1fr 1fr 1fr 1fr;border-top:1px solid rgba(255,255,255,0.08);border-bottom:1px solid rgba(255,255,255,0.08)}
@@ -131,7 +131,7 @@ OTHER: New Orleans Jazz (collective improvisation, community, celebration even i
 Match based on: facial energy, expression, bearing from photo; values, writing style, stated personality from online presence.
 
 Return ONLY valid compact JSON, no markdown:
-{"genreName":"Bebop Jazz","genreAdjective":"Cerebral & Combustible","accentColor":"#4a90e2","musicianName":"Charlie Parker","musicianYears":"1920–1955","musicianWhy":"One sentence connecting this musician's personality to the user's","tempoWord":"Breakneck","complexityWord":"Labyrinthine","emotionWord":"Electrified","eraWord":"1940s–50s","physicalVibe":"2 sentences about how their face and energy align with this genre","soulMatch":"2-3 sentences about personality and values alignment","genreLesson":"2-3 sentences on what this genre IS as a personality type — what kind of soul inhabits it","surpriseFactor":"One sentence about what this match reveals about the person","physicalDescription":"Brief physical description for portrait generation: hair color/style, facial structure, beard/no beard, apparent age range, expression energy","genreVisuals":"Visual/atmospheric description of this genre's world: lighting, setting, clothing, mood, era — for portrait generation","shareQuote":"Authentic quote from the matched musician, max 18 words"}
+{"genreName":"Bebop Jazz","genreAdjective":"Cerebral & Combustible","accentColor":"#4a90e2","musicianName":"Charlie Parker","musicianYears":"1920–1955","musicianWhy":"One sentence connecting this musician's personality to the user's","tempoWord":"Breakneck","complexityWord":"Labyrinthine","emotionWord":"Electrified","eraWord":"1940s–50s","physicalVibe":"2 sentences about how their face and energy align with this genre","soulMatch":"2-3 sentences about personality and values alignment","genreLesson":"2-3 sentences on what this genre IS as a personality type — what kind of soul inhabits it","surpriseFactor":"One sentence about what this match reveals about the person","physicalDescription":"Brief physical description for portrait generation: hair color/style, facial structure, beard/no beard, apparent age range, expression energy","genreVisuals":"Vivid scene description for image generation — the physical world of this genre: specific location, lighting, objects, atmosphere, color palette, NO people (e.g. 'dimly lit 1960s jazz club, saxophone on stand, cigarette smoke curling through amber light, brick walls, empty stage' or 'cosmic rocky landscape at night, vintage synthesizer glowing, aurora borealis, vast starfield')","shareQuote":"Authentic quote from the matched musician, max 18 words"}
 
 ACCENT COLOR GUIDE — pick the best fit:
 Bebop/Hard Bop: #4a90e2 (electric blue)
@@ -273,11 +273,13 @@ async function analyze() {
     }
 
     const accent = result.accentColor || '#f0c040';
-    // Two-tier portrait: detailed first, simple fallback
-    const portraitPrompt = `${result.genreVisuals || result.genreName + ' musician'}, dramatic atmospheric music photography, ${result.physicalDescription || 'musician portrait'}, cinematic lighting`;
-    const fallbackPrompt = `${result.genreName} musician, moody atmospheric music portrait, dramatic stage lighting, artistic photography`;
-    const portrait = `https://image.pollinations.ai/prompt/${encodeURIComponent(portraitPrompt)}?width=640&height=480&model=flux&nologo=true`;
-    const fallbackPortrait = `https://image.pollinations.ai/prompt/${encodeURIComponent(fallbackPrompt)}?width=640&height=480&model=flux&seed=42&nologo=true`;
+    // Genre scene image — atmospheric world of the genre, not a person portrait
+    const scenePrompt = result.genreVisuals
+      ? `${result.genreVisuals}, no people, cinematic, atmospheric, high quality`
+      : `${result.genreName} music atmosphere, moody, cinematic, no people, artistic`;
+    const fallbackPrompt = `${result.genreName} music, atmospheric scene, dramatic lighting, cinematic, no people`;
+    const portrait = `https://image.pollinations.ai/prompt/${encodeURIComponent(scenePrompt)}?width=800&height=500`;
+    const fallbackPortrait = `https://image.pollinations.ai/prompt/${encodeURIComponent(fallbackPrompt)}?width=800&height=500&seed=42`;
 
     clearInterval(msgTimer);
     set({ result, portrait, fallbackPortrait, pLoaded: false, step: 'result', err: null });
@@ -375,7 +377,7 @@ ${S.err ? `<div class="err">${S.err}</div>` : ''}
     <div class="card-adj">${r.genreAdjective}</div>
   </div>
   <div class="card-img-wrap">
-    <span class="port-ph" id="portPh">Rendering your sound…</span>
+    <span class="port-ph" id="portPh">Painting your sonic world…</span>
     <img alt="Your music portrait" id="portImg" style="display:none">
   </div>
   <div class="card-stats" style="background:rgba(0,0,0,0.4)">
