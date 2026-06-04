@@ -373,7 +373,7 @@ ${S.err ? `<div class="err">${S.err}</div>` : ''}
   </div>
   <div class="card-img-wrap">
     <span class="port-ph" id="portPh">Rendering your sound…</span>
-    <img src="${S.portrait}" alt="Your music portrait" id="portImg" style="display:none">
+    <img alt="Your music portrait" id="portImg" style="display:none">
   </div>
   <div class="card-stats" style="background:rgba(0,0,0,0.4)">
     <div class="stat"><span class="stat-l" style="color:${accent}">Tempo</span><span class="stat-v">${r.tempoWord || '—'}</span></div>
@@ -410,9 +410,18 @@ ${r.surpriseFactor ? `<div class="surprise" style="border-color:${accentMid}"><d
 </div>`;
 
     const pi = document.getElementById('portImg');
-    if (pi) {
-      pi.onload = () => { pi.style.display = 'block'; const ph = document.getElementById('portPh'); if (ph) ph.style.display = 'none'; };
-      pi.onerror = () => { pi.remove(); };
+    if (pi && S.portrait) {
+      pi.onload = () => {
+        pi.style.display = 'block';
+        const ph = document.getElementById('portPh');
+        if (ph) ph.style.display = 'none';
+      };
+      pi.onerror = () => {
+        const ph = document.getElementById('portPh');
+        if (ph) ph.textContent = 'Portrait unavailable — but your sound is real.';
+      };
+      // Set src AFTER handlers so onload always fires
+      pi.src = S.portrait;
     }
   }
 }
