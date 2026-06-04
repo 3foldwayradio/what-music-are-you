@@ -273,11 +273,14 @@ async function analyze() {
     }
 
     const accent = result.accentColor || '#f0c040';
-    const portraitPrompt = `professional music photography portrait, ${result.physicalDescription || 'musician'}, ${result.genreVisuals || result.genreName + ' musician aesthetic'}, dramatic artistic lighting, high quality music portrait photography`;
-    const portrait = `https://image.pollinations.ai/prompt/${encodeURIComponent(portraitPrompt)}?width=640&height=480&seed=777&nologo=true`;
+    // Two-tier portrait: detailed first, simple fallback
+    const portraitPrompt = `${result.genreVisuals || result.genreName + ' musician'}, dramatic atmospheric music photography, ${result.physicalDescription || 'musician portrait'}, cinematic lighting`;
+    const fallbackPrompt = `${result.genreName} musician, moody atmospheric music portrait, dramatic stage lighting, artistic photography`;
+    const portrait = `https://image.pollinations.ai/prompt/${encodeURIComponent(portraitPrompt)}?width=640&height=480&model=flux&nologo=true`;
+    const fallbackPortrait = `https://image.pollinations.ai/prompt/${encodeURIComponent(fallbackPrompt)}?width=640&height=480&model=flux&seed=42&nologo=true`;
 
     clearInterval(msgTimer);
-    set({ result, portrait, pLoaded: false, step: 'result', err: null });
+    set({ result, portrait, fallbackPortrait, pLoaded: false, step: 'result', err: null });
   } catch (err) {
     clearInterval(msgTimer);
     set({ err: err.message, step: 'input' });
@@ -417,8 +420,13 @@ ${r.surpriseFactor ? `<div class="surprise" style="border-color:${accentMid}"><d
         if (ph) ph.style.display = 'none';
       };
       pi.onerror = () => {
-        const ph = document.getElementById('portPh');
-        if (ph) ph.textContent = 'Portrait unavailable — but your sound is real.';
+        // First failure — try the simpler fallback portrait
+        if (S.fallbackPortrait && pi.src !== S.fallbackPortrait) {
+          pi.src = S.fallbackPortrait;
+        } else {
+          const ph = document.getElementById('portPh');
+          if (ph) ph.textContent = 'Portrait unavailable — but your sound is real.';
+        }
       };
       // Set src AFTER handlers so onload always fires
       pi.src = S.portrait;
