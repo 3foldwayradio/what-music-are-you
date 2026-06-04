@@ -1,0 +1,423 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>What Music Are You?</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🎵</text></svg>">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,700&family=Raleway:wght@300;400;600;700&family=Lora:ital,wght@0,400;1,400&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Raleway',sans-serif;background:#080808;color:#f0f0f0;min-height:100vh}
+#app{min-height:100vh;background:radial-gradient(ellipse at 50% -10%,#1a1a2e 0%,#080808 60%);padding:20px 20px 60px}
+.content{max-width:720px;margin:0 auto}
+
+/* LANDING */
+.landing{text-align:center;padding:56px 16px 36px}
+.vinyl{font-size:64px;display:block;margin-bottom:20px;animation:spin 12s linear infinite;display:inline-block}
+@keyframes spin{0%{transform:rotate(0deg)}100%{transform:rotate(360deg)}}
+.eyebrow{font-family:'Raleway',sans-serif;font-size:10px;letter-spacing:0.35em;color:#888;text-transform:uppercase;margin-bottom:16px}
+.main-h{font-family:'Playfair Display',serif;font-size:clamp(32px,7vw,68px);font-weight:900;color:#fff;line-height:1.05;margin-bottom:8px;letter-spacing:-0.02em}
+.main-h span{color:#f0c040;font-style:italic}
+.tagline{font-size:15px;color:#666;line-height:1.85;max-width:460px;margin:20px auto 38px;font-weight:300}
+.cta{background:none;border:1.5px solid rgba(240,192,64,0.6);color:#f0c040;font-family:'Raleway',sans-serif;font-size:12px;font-weight:700;letter-spacing:0.25em;padding:16px 48px;cursor:pointer;text-transform:uppercase;transition:all 0.3s;border-radius:1px}
+.cta:hover{background:rgba(240,192,64,0.1);box-shadow:0 0 40px rgba(240,192,64,0.15)}
+.genre-scroll{margin-top:36px;font-size:11px;color:#333;letter-spacing:0.08em;line-height:2.2;font-weight:400}
+
+/* INPUT */
+.step-wrap{padding:36px 0 20px}
+.step-ey{font-size:10px;letter-spacing:0.3em;color:#888;text-transform:uppercase;text-align:center;margin-bottom:10px}
+.step-h{font-family:'Playfair Display',serif;font-size:clamp(22px,4vw,34px);font-weight:700;color:#fff;text-align:center;margin-bottom:6px}
+.step-hint{font-size:13px;color:#555;text-align:center;margin-bottom:28px;font-weight:300}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+@media(max-width:540px){.grid2{grid-template-columns:1fr}}
+.panel{background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.08);padding:22px 24px;border-radius:2px;margin-bottom:16px}
+.plbl{font-size:10px;letter-spacing:0.2em;color:#888;text-transform:uppercase;margin-bottom:16px;padding-bottom:10px;border-bottom:1px solid rgba(255,255,255,0.06)}
+.req{color:#f0c040}
+.drop-zone{border:1.5px dashed rgba(255,255,255,0.12);padding:30px 16px;text-align:center;cursor:pointer;transition:all 0.25s;border-radius:2px}
+.drop-zone:hover,.drop-zone.over{border-color:rgba(240,192,64,0.5);background:rgba(240,192,64,0.04)}
+.drop-ic{font-size:28px;margin-bottom:10px;opacity:0.4}
+.drop-t{font-size:12px;color:#888;letter-spacing:0.05em;margin-bottom:4px}
+.drop-h2{font-size:11px;color:#444}
+.prev-img{width:100%;height:190px;object-fit:cover;display:block;border-radius:2px}
+.prev-name{font-size:11px;color:#888;font-style:italic;margin:6px 0}
+.chg-btn{background:none;border:1px solid rgba(255,255,255,0.1);color:#888;font-size:10px;padding:5px 12px;cursor:pointer;border-radius:1px;letter-spacing:0.1em;text-transform:uppercase;transition:all 0.2s;font-family:'Raleway',sans-serif}
+.chg-btn:hover{border-color:rgba(240,192,64,0.4);color:#f0c040}
+.flbl{display:block;font-size:10px;letter-spacing:0.14em;color:#555;text-transform:uppercase;margin-bottom:6px}
+.url-in{width:100%;background:rgba(0,0,0,0.4);border:1px solid rgba(255,255,255,0.08);padding:10px 13px;color:#f0c040;font-size:13px;font-family:'Lora',serif;outline:none;border-radius:1px;margin-bottom:10px;transition:border-color 0.2s}
+.url-in::placeholder{color:#333}
+.url-in:focus{border-color:rgba(240,192,64,0.35)}
+.url-cap{font-size:11px;color:#444;margin-bottom:14px;line-height:1.6}
+.go-btn{width:100%;background:linear-gradient(135deg,rgba(240,192,64,0.9),rgba(200,140,20,0.9));border:none;color:#080808;font-family:'Raleway',sans-serif;font-size:12px;font-weight:700;letter-spacing:0.25em;padding:17px;cursor:pointer;text-transform:uppercase;border-radius:1px;transition:all 0.3s;margin-top:8px}
+.go-btn:disabled{opacity:0.25;cursor:not-allowed}
+.go-btn:not(:disabled):hover{box-shadow:0 6px 30px rgba(240,192,64,0.25);transform:translateY(-1px)}
+.err{background:rgba(200,50,50,0.1);border:1px solid rgba(200,50,50,0.25);padding:12px 16px;color:#e88;font-size:12px;border-radius:1px;margin-bottom:14px;font-family:monospace;white-space:pre-wrap;word-break:break-all;line-height:1.5}
+
+/* ANALYZING */
+.analyzing{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:500px;text-align:center;padding:40px 20px}
+.note-anim{font-size:48px;animation:pulse 1.6s ease-in-out infinite;display:block;margin-bottom:24px}
+@keyframes pulse{0%,100%{transform:scale(1);opacity:0.7}50%{transform:scale(1.15);opacity:1}}
+.an-h{font-family:'Playfair Display',serif;font-size:24px;font-weight:700;color:#fff;margin-bottom:10px}
+.an-s{font-size:13px;color:#666;min-height:22px;font-weight:300}
+.pbar{width:280px;height:1px;background:rgba(240,192,64,0.1);margin-top:32px;overflow:hidden}
+.pfill{height:100%;background:linear-gradient(90deg,#f0c040,#c8941a);animation:pw 3.5s ease-in-out infinite}
+@keyframes pw{0%{width:8%}40%{width:65%}75%{width:84%}100%{width:90%}}
+
+/* RESULT — RECORD SLEEVE CARD */
+.result-wrap{padding:20px 0}
+.back-btn{background:none;border:none;color:#444;font-size:11px;letter-spacing:0.12em;cursor:pointer;text-transform:uppercase;padding:0 0 22px;display:flex;align-items:center;gap:6px;transition:color 0.2s;font-family:'Raleway',sans-serif}
+.back-btn:hover{color:#f0c040}
+.card-outer{max-width:500px;margin:0 auto;border-radius:3px;overflow:hidden}
+/* accent color applied via inline style on card-outer using CSS custom property */
+.card-hdr{padding:18px 20px 14px;text-align:center;position:relative}
+.card-eyebrow{font-size:9px;letter-spacing:0.3em;text-transform:uppercase;opacity:0.6;margin-bottom:8px;font-weight:600}
+.card-genre{font-family:'Playfair Display',serif;font-size:clamp(24px,5vw,38px);font-weight:900;color:#fff;line-height:1;letter-spacing:-0.02em}
+.card-adj{font-family:'Lora',serif;font-size:14px;font-style:italic;opacity:0.7;margin-top:6px}
+.card-img-wrap{width:100%;aspect-ratio:4/3;overflow:hidden;display:flex;align-items:center;justify-content:center;position:relative;background:#050505}
+.card-img-wrap img{width:100%;height:100%;object-fit:cover;display:block}
+.port-ph{color:#333;font-style:italic;font-size:13px;padding:20px;position:absolute;text-align:center}
+.card-stats{display:grid;grid-template-columns:1fr 1fr 1fr 1fr;border-top:1px solid rgba(255,255,255,0.08);border-bottom:1px solid rgba(255,255,255,0.08)}
+.stat{padding:10px 7px;text-align:center;border-right:1px solid rgba(255,255,255,0.06)}
+.stat:last-child{border-right:none}
+.stat-l{font-size:8px;letter-spacing:0.18em;text-transform:uppercase;display:block;margin-bottom:4px;opacity:0.45;font-weight:600}
+.stat-v{font-family:'Raleway',sans-serif;font-size:11px;font-weight:700;display:block;color:#fff}
+.card-body{padding:18px 20px;background:rgba(0,0,0,0.3)}
+.musician-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;padding-bottom:14px;border-bottom:1px solid rgba(255,255,255,0.06)}
+.musician-label{font-size:9px;letter-spacing:0.2em;text-transform:uppercase;opacity:0.4;display:block;margin-bottom:4px;font-weight:600}
+.musician-name{font-family:'Playfair Display',serif;font-size:18px;font-weight:700;color:#fff}
+.musician-years{font-size:11px;opacity:0.4;font-weight:300}
+.musician-why{font-size:12px;opacity:0.6;font-style:italic;margin-top:2px;line-height:1.5}
+.sec{margin-bottom:14px}
+.sec-l{font-size:9px;letter-spacing:0.2em;text-transform:uppercase;opacity:0.4;margin-bottom:6px;display:block;font-weight:600}
+.sec-t{font-size:13px;color:#ccc;line-height:1.75;font-weight:300}
+.card-quote{padding:16px 20px;text-align:center;border-top:1px solid rgba(255,255,255,0.06)}
+.q-text{font-family:'Lora',serif;font-size:14px;font-style:italic;color:#aaa;line-height:1.7}
+.q-attr{font-size:9px;letter-spacing:0.14em;text-transform:uppercase;opacity:0.35;margin-top:6px;font-weight:600}
+.card-foot{padding:8px 20px;border-top:1px solid rgba(255,255,255,0.05);display:flex;justify-content:space-between;align-items:center;background:rgba(0,0,0,0.2)}
+.foot-t{font-size:9px;letter-spacing:0.12em;text-transform:uppercase;opacity:0.25;font-weight:600}
+.surprise{background:rgba(255,255,255,0.02);border:1px solid rgba(255,255,255,0.06);padding:14px 18px;margin:16px auto 0;border-radius:2px;max-width:500px}
+.surp-l{font-size:9px;letter-spacing:0.2em;text-transform:uppercase;opacity:0.4;margin-bottom:6px;font-weight:600}
+.surp-t{font-size:13px;color:#aaa;font-style:italic;line-height:1.68;font-weight:300}
+.actions{display:flex;gap:12px;max-width:500px;margin:18px auto 0;flex-wrap:wrap}
+.act{flex:1;min-width:130px;padding:13px;border-radius:1px;font-family:'Raleway',sans-serif;font-size:11px;letter-spacing:0.14em;text-transform:uppercase;cursor:pointer;transition:all 0.25s;font-weight:700}
+.act-p{border:none;color:#080808}
+.act-p:hover{opacity:0.9;transform:translateY(-1px)}
+.act-s{background:transparent;border:1px solid rgba(255,255,255,0.1);color:#666}
+.act-s:hover{border-color:rgba(240,192,64,0.3);color:#f0c040}
+.copy-ok{font-size:11px;font-family:'Raleway',sans-serif;text-align:center;margin-top:8px;height:18px;opacity:0;transition:opacity 0.4s;letter-spacing:0.1em}
+.copy-ok.show{opacity:1}
+</style>
+</head>
+<body>
+<div id="app"><div class="content" id="root"></div></div>
+
+<script>
+const SYS = `You are the musical soul matching engine for WHAT MUSIC ARE YOU? — an app that analyzes a person's face and online presence to match them to a specific music genre and an iconic musician.
+
+Match at the deep, specific sub-genre level. Do NOT default to generic categories. Use the full spectrum:
+
+JAZZ: Bebop (Parker, Gillespie — hyperactive intellectual, rule-breaker who mastered the rules first), Cool Jazz (Miles Davis — effortlessly sophisticated, says more with less), Modal Jazz (Coltrane — spiritual seeker, meditative, interested in texture over narrative), Free Jazz (Ornette Coleman — pure anarchist creativity, no rules), Hard Bop (Art Blakey — earthy, communal, groove is everything), Gypsy Jazz (Django Reinhardt — romantic wanderer, overcomes limitation with beauty)
+BLUES: Delta Blues (Robert Johnson — raw survivor, stripped of pretense, haunted), Chicago Blues (Muddy Waters — electric urban grit, communal but fierce), Piedmont Blues (refined, fingerpicking, understated emotional intelligence)
+CLASSICAL: Romantic Classical (Beethoven, Chopin — grand emotional expression, dramatic, feels everything at full volume), Baroque (Bach — mathematical beauty, finds the divine in structure), Minimalist Classical (Philip Glass, Arvo Pärt — meditative, repetition as revelation, Buddhist patience), Chamber Music (intimate, conversational, prefers depth over spectacle)
+ROCK: Psychedelic Rock (Hendrix, Syd Barrett — reality is negotiable, visual thinker, anti-authoritarian), Shoegaze (My Bloody Valentine — introvert who makes noise, finds beauty in texture and atmosphere), Punk (Strummer, Ramones — rage at the system, DIY, no pretension), Post-Punk (Ian Curtis, Mark E. Smith — intellectual punk, gothic, literary), Prog Rock (Floyd, Zappa — complex systems thinker, technically gifted, possibly too clever), Glam Rock (Bowie — identity as performance, costume as liberation), Grunge (Cobain — uncomfortably honest, allergic to artifice)
+FOLK: Singer-Songwriter (Nick Drake, Townes Van Zandt — profound inner world, performs for the few who truly listen), British Folk (Sandy Denny — rooted in tradition but restless), Appalachian Folk (spare, survival, land and memory)
+ELECTRONIC: Ambient (Brian Eno — needs space, finds meaning in atmosphere, introvert philosopher), Krautrock (Can, Neu! — motorik repetition, collective trance, anti-rock), Techno (disciplined hedonist, finds freedom in structure), Synthwave (nostalgic futurist)
+SOUL & R&B: Classic Soul (Aretha, Otis — raw emotional power, church raised, unstoppable conviction), Motown (polished, communal joy, making something perfect under constraint), Neo-Soul (D'Angelo, Erykah Badu — modern consciousness with deep roots showing), Funk (James Brown — the body is the instrument, groove as philosophy)
+HIP-HOP: Golden Age (Biggie, Nas — verbal dexterity, urban philosopher, authentic witness), Jazz Rap (A Tribe Called Quest — cerebral, cultured, finds connection between genres), Conscious Rap (Kendrick — unflinching self-examination, political but personal)
+COUNTRY: Outlaw Country (Waylon, Cash — independent streak, doesn't follow rules, honest to bone), Bluegrass (technically brilliant, rooted in community and tradition), Alt-Country (Townes, Gram Parsons — too sad for country, too country for rock)
+WORLD: Bossa Nova (João Gilberto — sensual sophistication, finds beauty effortlessly, relaxed confidence), Afrobeat (Fela Kuti — political consciousness, community over individual, joyful resistance), Flamenco (passion as discipline, suffering as art form), Reggae (Marley — spiritual resistance, patience as power)
+OTHER: New Orleans Jazz (collective improvisation, community, celebration even in grief), Americana (Tom Waits, Nanci Griffith — between genres, storyteller above all), Art Rock (Radiohead — alienated intellectual who still wants connection), Bedroom Pop (Billie Eilish — whispered intimacy, dark emotion made accessible)
+
+Match based on: facial energy, expression, bearing from photo; values, writing style, stated personality from online presence.
+
+Return ONLY valid compact JSON, no markdown:
+{"genreName":"Bebop Jazz","genreAdjective":"Cerebral & Combustible","accentColor":"#4a90e2","musicianName":"Charlie Parker","musicianYears":"1920–1955","musicianWhy":"One sentence connecting this musician's personality to the user's","tempoWord":"Breakneck","complexityWord":"Labyrinthine","emotionWord":"Electrified","eraWord":"1940s–50s","physicalVibe":"2 sentences about how their face and energy align with this genre","soulMatch":"2-3 sentences about personality and values alignment","genreLesson":"2-3 sentences on what this genre IS as a personality type — what kind of soul inhabits it","surpriseFactor":"One sentence about what this match reveals about the person","physicalDescription":"Brief physical description for portrait generation: hair color/style, facial structure, beard/no beard, apparent age range, expression energy","genreVisuals":"Visual/atmospheric description of this genre's world: lighting, setting, clothing, mood, era — for portrait generation","shareQuote":"Authentic quote from the matched musician, max 18 words"}
+
+ACCENT COLOR GUIDE — pick the best fit:
+Bebop/Hard Bop: #4a90e2 (electric blue)
+Cool/Modal Jazz: #5ba3b8 (cool teal-blue)
+Free Jazz: #9b59b6 (dissonant purple)
+Gypsy Jazz: #e8a020 (warm amber)
+Delta/Chicago Blues: #c0392b (deep red)
+Piedmont Blues: #8b6914 (earth brown)
+Romantic Classical: #8e44ad (rich purple)
+Baroque: #b8860b (gold)
+Minimalist Classical: #607d8b (grey-blue)
+Psychedelic Rock: #e91e8c (electric pink)
+Shoegaze: #78909c (washed blue-grey)
+Punk: #e53935 (raw red)
+Post-Punk: #455a64 (dark slate)
+Prog Rock: #00897b (deep teal)
+Glam Rock: #f06292 (glam pink)
+Grunge: #6d4c41 (muddied brown)
+Singer-Songwriter: #558b2f (forest green)
+Appalachian Folk: #795548 (earth)
+Ambient: #26c6da (ether blue)
+Techno: #7e57c2 (machine purple)
+Synthwave: #e040fb (neon purple)
+Classic Soul/Motown: #ef6c00 (warm orange)
+Neo-Soul: #d4a030 (burnished gold)
+Funk: #ffd600 (electric yellow)
+Golden Age Hip-Hop: #f39c12 (amber gold)
+Jazz Rap: #1a7a4a (cool green)
+Conscious Rap: #c62828 (urgent red)
+Outlaw Country: #5d4037 (leather brown)
+Bluegrass: #388e3c (mountain green)
+Bossa Nova: #ff7043 (warm coral)
+Afrobeat: #ff8f00 (vibrant orange)
+Flamenco: #b71c1c (passion red)
+Reggae: #2e7d32 (roots green)
+New Orleans Jazz: #f57f17 (parade gold)
+Americana: #6d4c41 (worn brown)
+Art Rock: #37474f (anthracite)
+Bedroom Pop: #4a148c (midnight purple)`;
+
+let S = {
+  step: 'landing',
+  photo: null,
+  urls: ['', '', ''],
+  result: null,
+  portrait: null,
+  pLoaded: false,
+  msg: 'Reading your frequency…',
+  err: null,
+  copied: false
+};
+
+const MSGS = [
+  'Reading your frequency…',
+  'Scanning the record crates…',
+  'Feeling your rhythm…',
+  'Consulting the session musicians…',
+  'Checking the liner notes…',
+  'Tuning to your wavelength…',
+  'Cross-referencing the archives…',
+  'Dropping the needle…'
+];
+
+let msgTimer = null;
+
+function set(u) { S = { ...S, ...u }; draw(); }
+
+async function resizePhoto(file) {
+  return new Promise(res => {
+    const img = new Image(), url = URL.createObjectURL(file);
+    img.onload = () => {
+      let { width: w, height: h } = img;
+      const max = 900;
+      if (w > max || h > max) {
+        if (w > h) { h = Math.round(h / w * max); w = max; }
+        else { w = Math.round(w / h * max); h = max; }
+      }
+      const c = document.createElement('canvas');
+      c.width = w; c.height = h;
+      c.getContext('2d').drawImage(img, 0, 0, w, h);
+      URL.revokeObjectURL(url);
+      const d = c.toDataURL('image/jpeg', 0.82);
+      res({ data: d.split(',')[1], type: 'image/jpeg', preview: d, name: file.name });
+    };
+    img.src = url;
+  });
+}
+
+async function analyze() {
+  set({ step: 'analyzing', err: null });
+  msgTimer = setInterval(() => set({ msg: MSGS[Math.floor(Math.random() * MSGS.length)] }), 2600);
+
+  try {
+    const hasUrls = S.urls.some(u => u.trim());
+    const uc = [];
+
+    if (S.photo) {
+      uc.push({ type: 'image', source: { type: 'base64', media_type: S.photo.type, data: S.photo.data } });
+    }
+
+    let p = 'Analyze this person and identify which specific music genre and iconic musician they are. Match their face, energy, and personality.';
+    if (hasUrls) {
+      p += '\n\nSearch and read their online presence for deeper soul analysis:\n'
+        + S.urls.filter(u => u.trim()).map((u, i) => `${i + 1}. ${u}`).join('\n')
+        + '\n\nTheir writing style, stated values, and expressed personality should heavily influence the genre and musician match.';
+    }
+    p += '\n\nReturn only the JSON object.';
+    uc.push({ type: 'text', text: p });
+
+    const body = { model: 'claude-sonnet-4-6', max_tokens: 1500, system: SYS, messages: [{ role: 'user', content: uc }] };
+    if (hasUrls) body.tools = [{ type: 'web_search_20250305', name: 'web_search' }];
+
+    const r = await fetch('/api/analyze', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(body)
+    });
+
+    const final = await r.json();
+
+    if (final.type === 'error' || final.error) {
+      throw new Error('API error: ' + (final.error?.message || JSON.stringify(final.error)));
+    }
+    if (!r.ok) throw new Error('HTTP ' + r.status + ': ' + JSON.stringify(final).slice(0, 200));
+    if (!final.content) throw new Error('Empty response. Keys: ' + Object.keys(final).join(', '));
+
+    const txt = (final.content || []).filter(b => b.type === 'text').map(b => b.text).join('');
+    if (!txt) throw new Error('No text in response. Block types: ' + (final.content || []).map(b => b.type).join(', '));
+
+    const stripped = txt.replace(/```(?:json)?\s*/gi, '').replace(/```/g, '').trim();
+    const si = stripped.indexOf('{'), ei = stripped.lastIndexOf('}');
+    if (si === -1) throw new Error('No JSON found. Raw: ' + txt.slice(0, 300));
+
+    let result;
+    try {
+      result = JSON.parse(stripped.slice(si, ei + 1));
+    } catch (pe) {
+      throw new Error('Parse failed: ' + pe.message + ' — Raw: ' + stripped.slice(si, si + 300));
+    }
+
+    const accent = result.accentColor || '#f0c040';
+    const portraitPrompt = `professional music photography portrait, ${result.physicalDescription || 'musician'}, ${result.genreVisuals || result.genreName + ' musician aesthetic'}, dramatic artistic lighting, high quality music portrait photography`;
+    const portrait = `https://image.pollinations.ai/prompt/${encodeURIComponent(portraitPrompt)}?width=640&height=480&seed=777&nologo=true`;
+
+    clearInterval(msgTimer);
+    set({ result, portrait, pLoaded: false, step: 'result', err: null });
+  } catch (err) {
+    clearInterval(msgTimer);
+    set({ err: err.message, step: 'input' });
+  }
+}
+
+function copyShare() {
+  if (!S.result) return;
+  const r = S.result;
+  const t = `🎵 WHAT MUSIC ARE YOU?\n\nMy match: ${r.genreName} — ${r.genreAdjective}\nMy musician: ${r.musicianName}\n\n"${r.shareQuote}"\n— ${r.musicianName}\n\nDiscover yours → whatmusicareyou.com\n#WhatMusicAreYou #${r.genreName.replace(/\s+/g, '')}`;
+  navigator.clipboard.writeText(t).then(() => {
+    set({ copied: true });
+    setTimeout(() => set({ copied: false }), 2800);
+  });
+}
+
+function updateUrl(i, v) { const u = [...S.urls]; u[i] = v; S.urls = u; }
+
+function draw() {
+  const el = document.getElementById('root');
+  if (!el) return;
+
+  if (S.step === 'landing') {
+    el.innerHTML = `<div class="landing">
+<span class="vinyl">🎵</span>
+<div class="eyebrow">A Musical Soul Match</div>
+<h1 class="main-h">What Music<br><span>Are You?</span></h1>
+<p class="tagline">Your face holds a frequency. Your words carry a rhythm. Upload your photo — and optionally share your online voice — to discover which specific genre of music you are, and which legendary musician shares your soul.</p>
+<button class="cta" onclick="set({step:'input'})">Find Your Sound</button>
+<p class="genre-scroll">Bebop · Delta Blues · Shoegaze · Bossa Nova · Free Jazz · Outlaw Country<br>Minimalist Classical · Neo-Soul · Psychedelic Rock · Afrobeat · Ambient · Gypsy Jazz</p>
+</div>`;
+
+  } else if (S.step === 'input') {
+    const ph = S.photo;
+    el.innerHTML = `<div class="step-wrap">
+<div class="step-ey">What Music Are You · Soul Analysis</div>
+<h2 class="step-h">Present Yourself</h2>
+<p class="step-hint">Your photo is required. Your links make the match deeper.</p>
+${S.err ? `<div class="err">${S.err}</div>` : ''}
+<div class="grid2">
+  <div>
+    <div class="panel">
+      <div class="plbl">Your Photo <span class="req">✦</span></div>
+      ${ph
+        ? `<img src="${ph.preview}" alt="photo" class="prev-img"><p class="prev-name">${ph.name}</p><button class="chg-btn" onclick="document.getElementById('pIn').click()">Change Photo</button>`
+        : `<div class="drop-zone" id="dz"><div class="drop-ic">🎙</div><div class="drop-t">Upload Your Photo</div><div class="drop-h2">Click or drag here</div></div>`
+      }
+      <input type="file" id="pIn" accept="image/*" style="display:none">
+    </div>
+  </div>
+  <div>
+    <div class="panel">
+      <div class="plbl">Your Online Voice <span style="color:#444;font-size:9px">(Optional)</span></div>
+      <p class="url-cap">Add up to 3 public links — Facebook, blog, website. The AI reads your actual words to deepen the soul match.</p>
+      ${[0, 1, 2].map(i => `<label class="flbl">Link ${i + 1}</label><input class="url-in" type="url" placeholder="${['https://facebook.com/yourprofile', 'https://yourblog.com', 'https://yourwebsite.com'][i]}" value="${S.urls[i]}" onchange="updateUrl(${i}, this.value)">`).join('')}
+    </div>
+  </div>
+</div>
+<button class="go-btn" ${!ph ? 'disabled' : ''} onclick="analyze()">♫ &nbsp; Find My Sound &nbsp; ♫</button>
+</div>`;
+
+    const pi = document.getElementById('pIn');
+    if (pi) pi.onchange = async e => { if (e.target.files[0]) { const p = await resizePhoto(e.target.files[0]); set({ photo: p }); } };
+    const dz = document.getElementById('dz');
+    if (dz) {
+      dz.onclick = () => document.getElementById('pIn').click();
+      dz.ondragover = e => { e.preventDefault(); dz.classList.add('over'); };
+      dz.ondragleave = () => dz.classList.remove('over');
+      dz.ondrop = async e => { e.preventDefault(); dz.classList.remove('over'); if (e.dataTransfer.files[0]) { const p = await resizePhoto(e.dataTransfer.files[0]); set({ photo: p }); } };
+    }
+
+  } else if (S.step === 'analyzing') {
+    el.innerHTML = `<div class="analyzing">
+<span class="note-anim">🎵</span>
+<h2 class="an-h">Reading Your Soul</h2>
+<p class="an-s">${S.msg}</p>
+<div class="pbar"><div class="pfill"></div></div>
+</div>`;
+
+  } else if (S.step === 'result' && S.result) {
+    const r = S.result;
+    const accent = r.accentColor || '#f0c040';
+    const accentDim = accent + '22';
+    const accentMid = accent + '44';
+
+    el.innerHTML = `<div class="result-wrap">
+<button class="back-btn" onclick="set({step:'input',result:null,portrait:null})">← Try Again</button>
+<div class="card-outer" style="background:#0d0d0d;border:1px solid ${accentMid};box-shadow:0 0 0 1px #0d0d0d,0 0 0 3px ${accentDim},0 24px 80px rgba(0,0,0,0.9)">
+  <div class="card-hdr" style="background:linear-gradient(160deg,${accentDim},transparent);border-bottom:1px solid ${accentMid}">
+    <div class="card-eyebrow" style="color:${accent}">What Music Are You · Soul Match</div>
+    <div class="card-genre" style="color:#fff">${r.genreName}</div>
+    <div class="card-adj">${r.genreAdjective}</div>
+  </div>
+  <div class="card-img-wrap">
+    <span class="port-ph" id="portPh">Rendering your sound…</span>
+    <img src="${S.portrait}" alt="Your music portrait" id="portImg" style="display:none">
+  </div>
+  <div class="card-stats" style="background:rgba(0,0,0,0.4)">
+    <div class="stat"><span class="stat-l" style="color:${accent}">Tempo</span><span class="stat-v">${r.tempoWord || '—'}</span></div>
+    <div class="stat"><span class="stat-l" style="color:${accent}">Texture</span><span class="stat-v">${r.complexityWord || '—'}</span></div>
+    <div class="stat"><span class="stat-l" style="color:${accent}">Emotion</span><span class="stat-v">${r.emotionWord || '—'}</span></div>
+    <div class="stat"><span class="stat-l" style="color:${accent}">Era</span><span class="stat-v">${r.eraWord || '—'}</span></div>
+  </div>
+  <div class="card-body">
+    <div class="musician-row">
+      <div>
+        <span class="musician-label" style="color:${accent}">Your Musician</span>
+        <div class="musician-name">${r.musicianName}</div>
+        <div class="musician-years">${r.musicianYears || ''}</div>
+        <div class="musician-why">${r.musicianWhy || ''}</div>
+      </div>
+      <div style="font-size:36px;opacity:0.15">♪</div>
+    </div>
+    <div class="sec"><div class="sec-l" style="color:${accent}">Your Vibe</div><p class="sec-t">${r.physicalVibe}</p></div>
+    <div class="sec"><div class="sec-l" style="color:${accent}">Soul Match</div><p class="sec-t">${r.soulMatch}</p></div>
+    <div class="sec"><div class="sec-l" style="color:${accent}">What This Genre Is</div><p class="sec-t">${r.genreLesson}</p></div>
+  </div>
+  ${r.shareQuote ? `<div class="card-quote" style="background:rgba(0,0,0,0.3)"><p class="q-text">"${r.shareQuote}"</p><p class="q-attr" style="color:${accent}">— ${r.musicianName}</p></div>` : ''}
+  <div class="card-foot">
+    <span class="foot-t">What Music Are You?</span>
+    <span class="foot-t">#WhatMusicAreYou</span>
+  </div>
+</div>
+${r.surpriseFactor ? `<div class="surprise" style="border-color:${accentMid}"><div class="surp-l" style="color:${accent}">♪ What This Reveals</div><p class="surp-t">${r.surpriseFactor}</p></div>` : ''}
+<div class="actions">
+  <button class="act act-p" style="background:linear-gradient(135deg,${accent},${accent}aa)" onclick="copyShare()">Copy & Share Result</button>
+  <button class="act act-s" onclick="set({step:'input',result:null,portrait:null,photo:null,urls:['','','']})">Try With Different Photo</button>
+</div>
+<div class="copy-ok show-${S.copied}" style="color:${accent};${S.copied ? 'opacity:1' : 'opacity:0'}">♫ Copied — ready to share!</div>
+</div>`;
+
+    const pi = document.getElementById('portImg');
+    if (pi) {
+      pi.onload = () => { pi.style.display = 'block'; const ph = document.getElementById('portPh'); if (ph) ph.style.display = 'none'; };
+      pi.onerror = () => { pi.remove(); };
+    }
+  }
+}
+
+draw();
+</script>
+</body>
+</html>
