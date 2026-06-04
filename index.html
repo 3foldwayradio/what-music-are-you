@@ -278,8 +278,9 @@ async function analyze() {
       ? `${result.genreVisuals}, no people, cinematic, atmospheric, high quality`
       : `${result.genreName} music atmosphere, moody, cinematic, no people, artistic`;
     const fallbackPrompt = `${result.genreName} music, atmospheric scene, dramatic lighting, cinematic, no people`;
-    const portrait = `https://image.pollinations.ai/prompt/${encodeURIComponent(scenePrompt)}?width=800&height=500`;
-    const fallbackPortrait = `https://image.pollinations.ai/prompt/${encodeURIComponent(fallbackPrompt)}?width=800&height=500&seed=42`;
+    // Route through our own proxy to bypass browser extension blocking
+    const portrait = `/api/image?prompt=${encodeURIComponent(scenePrompt)}`;
+    const fallbackPortrait = `/api/image?prompt=${encodeURIComponent(fallbackPrompt)}`;
 
     clearInterval(msgTimer);
     set({ result, portrait, fallbackPortrait, pLoaded: false, step: 'result', err: null });
